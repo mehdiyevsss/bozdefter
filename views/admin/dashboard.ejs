@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span>Thoughts</span>
+      <small>Admin</small>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin" class="sidebar-link active">Articles</a>
+      <a href="/admin/new" class="sidebar-link">New Article</a>
+      <a href="/admin/settings" class="sidebar-link">Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" target="_blank" class="sidebar-link">View Blog &nearr;</a>
+      <a href="/admin/logout" class="sidebar-link sidebar-link--danger">Sign out</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">Articles</h1>
+      <a href="/admin/new" class="btn btn-primary">+ New Article</a>
+    </div>
+
+    <% if (articles.length === 0) { %>
+      <div class="empty-state">
+        <p>No articles yet. <a href="/admin/new">Write your first one.</a></p>
+      </div>
+    <% } else { %>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Comments</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% articles.forEach(article => { %>
+              <tr>
+                <td>
+                  <a href="/article/<%= article.slug %>" target="_blank" class="table-title">
+                    <%= article.title %>
+                  </a>
+                </td>
+                <td>
+                  <form action="/admin/toggle/<%= article.id %>" method="POST" style="display:inline">
+                    <button type="submit" class="badge badge--<%= article.published ? 'published' : 'draft' %>">
+                      <%= article.published ? 'Published' : 'Draft' %>
+                    </button>
+                  </form>
+                </td>
+                <td><span class="comment-count"><%= article.comment_count %></span></td>
+                <td><time class="table-date"><%= new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></time></td>
+                <td class="table-actions">
+                  <a href="/admin/edit/<%= article.id %>" class="btn btn-sm btn-outline">Edit</a>
+                  <form action="/admin/delete/<%= article.id %>" method="POST" style="display:inline" onsubmit="return confirm('Delete this article and all its comments?')">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+</body>
+</html>

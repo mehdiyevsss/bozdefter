@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span>Thoughts</span>
+      <small>Admin</small>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin" class="sidebar-link">Articles</a>
+      <a href="/admin/new" class="sidebar-link">New Article</a>
+      <a href="/admin/settings" class="sidebar-link active">Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" target="_blank" class="sidebar-link">View Blog &nearr;</a>
+      <a href="/admin/logout" class="sidebar-link sidebar-link--danger">Sign out</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">Settings</h1>
+    </div>
+
+    <div class="settings-section">
+      <h2 class="settings-title">Change Password</h2>
+
+      <% if (success) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form action="/admin/settings" method="POST" class="settings-form">
+        <div class="form-group">
+          <label for="currentPassword" class="form-label">Current Password</label>
+          <input type="password" id="currentPassword" name="currentPassword" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="newPassword" class="form-label">New Password</label>
+          <input type="password" id="newPassword" name="newPassword" class="form-input" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm New Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update password</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

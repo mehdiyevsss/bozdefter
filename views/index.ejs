@@ -1,0 +1,55 @@
+<%- include('partials/head', { pageTitle: 'Home' }) %>
+<%- include('partials/nav') %>
+
+<main class="main">
+  <div class="container">
+
+    <header class="page-header">
+      <h1 class="page-title">Latest Articles</h1>
+      <p class="page-subtitle">Thoughts, ideas, and perspectives.</p>
+    </header>
+
+    <% if (articles.length === 0) { %>
+      <div class="empty-state">
+        <p>No articles yet. Check back soon.</p>
+      </div>
+    <% } else { %>
+      <div class="articles-grid">
+        <% articles.forEach(article => { %>
+          <article class="card">
+            <% if (article.thumbnail) { %>
+              <a href="/article/<%= article.slug %>" class="card-image-link">
+                <img src="<%= article.thumbnail %>" alt="<%= article.title %>" class="card-image">
+              </a>
+            <% } %>
+            <div class="card-body">
+              <time class="card-date"><%= new Date(article.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></time>
+              <h2 class="card-title">
+                <a href="/article/<%= article.slug %>"><%= article.title %></a>
+              </h2>
+              <% if (article.excerpt) { %>
+                <p class="card-excerpt"><%= article.excerpt %></p>
+              <% } %>
+              <a href="/article/<%= article.slug %>" class="card-link">Read more &rarr;</a>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+
+      <% if (totalPages > 1) { %>
+        <nav class="pagination">
+          <% if (page > 1) { %>
+            <a href="/?page=<%= page - 1 %>" class="btn btn-outline">&larr; Newer</a>
+          <% } %>
+          <span class="pagination-info">Page <%= page %> of <%= totalPages %></span>
+          <% if (page < totalPages) { %>
+            <a href="/?page=<%= page + 1 %>" class="btn btn-outline">Older &rarr;</a>
+          <% } %>
+        </nav>
+      <% } %>
+    <% } %>
+
+  </div>
+</main>
+
+<%- include('partials/footer') %>

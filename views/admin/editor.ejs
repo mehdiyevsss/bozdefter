@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= article ? 'Edit Article' : 'New Article' %> — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span>Thoughts</span>
+      <small>Admin</small>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin" class="sidebar-link">Articles</a>
+      <a href="/admin/new" class="sidebar-link <%= !article ? 'active' : '' %>">New Article</a>
+      <a href="/admin/settings" class="sidebar-link">Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="/" target="_blank" class="sidebar-link">View Blog &nearr;</a>
+      <a href="/admin/logout" class="sidebar-link sidebar-link--danger">Sign out</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="/admin" class="btn btn-outline btn-sm">&larr; Back</a>
+        <h1 class="admin-page-title"><%= article ? 'Edit Article' : 'New Article' %></h1>
+      </div>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <form action="<%= article ? '/admin/edit/' + article.id : '/admin/new' %>" method="POST" enctype="multipart/form-data" class="editor-form">
+
+      <div class="editor-layout">
+        <div class="editor-main">
+
+          <div class="form-group">
+            <label for="title" class="form-label">Title <span class="required">*</span></label>
+            <input type="text" id="title" name="title" class="form-input form-input--lg"
+              value="<%= article ? article.title : '' %>" placeholder="Article title" required>
+          </div>
+
+          <div class="form-group">
+            <label for="excerpt" class="form-label">Excerpt <span class="form-hint">(shown on homepage)</span></label>
+            <input type="text" id="excerpt" name="excerpt" class="form-input"
+              value="<%= article ? (article.excerpt || '') : '' %>" placeholder="Short description...">
+          </div>
+
+          <div class="form-group">
+            <label for="content" class="form-label">Content <span class="required">*</span></label>
+            <textarea id="content" name="content" class="form-textarea form-textarea--editor"
+              placeholder="Write your article here..." required><%= article ? article.content : '' %></textarea>
+          </div>
+
+        </div>
+
+        <aside class="editor-sidebar">
+
+          <div class="editor-panel">
+            <h3 class="panel-title">Publish</h3>
+            <div class="form-check">
+              <input type="checkbox" id="published" name="published" class="form-checkbox"
+                <%= (!article || article.published) ? 'checked' : '' %>>
+              <label for="published" class="form-check-label">Published</label>
+            </div>
+            <div class="panel-actions">
+              <button type="submit" class="btn btn-primary btn-block">
+                <%= article ? 'Save changes' : 'Publish article' %>
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-panel">
+            <h3 class="panel-title">Thumbnail</h3>
+            <% if (article && article.thumbnail) { %>
+              <div class="thumbnail-preview">
+                <img src="<%= article.thumbnail %>" alt="Current thumbnail" class="thumbnail-img">
+              </div>
+              <p class="form-hint" style="margin-bottom:8px;">Upload a new image to replace it.</p>
+            <% } %>
+            <input type="file" id="thumbnail" name="thumbnail" class="form-file" accept="image/*"
+              onchange="previewThumbnail(this)">
+            <div id="thumbnail-preview-new" class="thumbnail-preview" style="display:none; margin-top:10px;">
+              <img id="preview-img" src="" alt="New thumbnail" class="thumbnail-img">
+            </div>
+            <p class="form-hint">Max 5MB. JPG, PNG, GIF, WebP.</p>
+          </div>
+
+        </aside>
+      </div>
+
+    </form>
+  </main>
+</div>
+
+<script>
+function previewThumbnail(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('preview-img').src = e.target.result;
+    document.getElementById('thumbnail-preview-new').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<%- include('partials/head', { pageTitle: article.title }) %>
+<%- include('partials/nav') %>
+
+<main class="main">
+  <div class="container container--narrow">
+
+    <article class="article">
+      <% if (article.thumbnail) { %>
+        <div class="article-hero">
+          <img src="<%= article.thumbnail %>" alt="<%= article.title %>" class="article-hero-img">
+        </div>
+      <% } %>
+
+      <header class="article-header">
+        <time class="article-date"><%= new Date(article.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></time>
+        <h1 class="article-title"><%= article.title %></h1>
+        <% if (article.excerpt) { %>
+          <p class="article-excerpt"><%= article.excerpt %></p>
+        <% } %>
+      </header>
+
+      <div class="article-content">
+        <%- article.content.replace(/\n/g, '<br>') %>
+      </div>
+    </article>
+
+    <section class="comments-section">
+      <h2 class="comments-title">Opinions (<%= comments.length %>)</h2>
+
+      <% if (success) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form action="/article/<%= article.slug %>/comment" method="POST" class="comment-form">
+        <div class="form-group">
+          <label for="author" class="form-label">Your name (optional)</label>
+          <input type="text" id="author" name="author" class="form-input" placeholder="Anonymous" maxlength="50">
+        </div>
+        <div class="form-group">
+          <label for="content" class="form-label">Your opinion <span class="required">*</span></label>
+          <textarea id="content" name="content" class="form-textarea" rows="4" placeholder="Share your thoughts..." maxlength="2000" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post opinion</button>
+      </form>
+
+      <% if (comments.length > 0) { %>
+        <div class="comments-list">
+          <% comments.forEach(comment => { %>
+            <div class="comment">
+              <div class="comment-meta">
+                <span class="comment-author"><%= comment.author %></span>
+                <time class="comment-date"><%= new Date(comment.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></time>
+              </div>
+              <p class="comment-body"><%= comment.content %></p>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
+
+    <div class="back-link">
+      <a href="/" class="btn btn-outline">&larr; Back to articles</a>
+    </div>
+
+  </div>
+</main>
+
+<%- include('partials/footer') %>
